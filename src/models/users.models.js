@@ -51,7 +51,7 @@ const userSchema = new Schema(
 
 userSchema.pre("save", async function(next){
     if(!this.isModified("password")) return next()  // logic that ensures if password is not modifies then no encryption should be done
-        this.password = bcrypt.hash(this.password , 10 )  //(the thing which we want to encrypt , salts that means how many rounds we want to encrypt)
+        this.password = await bcrypt.hash(this.password , 10 )  //(the thing which we want to encrypt , salts that means how many rounds we want to encrypt)
         next()
 })
 
