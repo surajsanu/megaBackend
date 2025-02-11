@@ -435,7 +435,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
         from:"videos",
         localField:"watchHistory",
         foreignField:"_id",
-        as:"watchHistory"
+        as:"watchHistory",
         pipelines:[        //Now we have to write sub pipelines to get the results of next stages in same documents 
           {
             $lookup:{
@@ -444,33 +444,38 @@ const getWatchHistory = asyncHandler(async (req, res) => {
               foreignField:"_id",
               as:"owner",
               pipelines:[
+                {
                 $project:{
                   fullName:1,
                   username:1,
-                  avatar:1
+                  avatar:1,
                 }
+              }
               ]
-            },
-            {
+            }
+          },
+          {
               $addFields:{
                 owner:{ // overwriting the previous declared field owner
                   $first:"$owner"
                 }
               }
-            }
           }
         ]
-      }
+          }
     }
-  ])
+    ])
 
-  return res
-  .status(200)
-  .json(new ApiResponse(200, user[0].watchHistory,"watch History fetched successfully"))
-
-
-
+    return res
+    .status(200)
+    .json(new ApiResponse(200, user[0].watchHistory,"watch History fetched successfully"))
+    
 });
+
+  
+
+
+
 
 export {
   registerUser,
